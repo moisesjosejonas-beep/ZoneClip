@@ -154,3 +154,241 @@ index.html
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoneClip - Super Social Media AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #1877f2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+        .feed, .chat, .ai-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .ai-section { border-right: none; background-color: #eef5ff; }
+        h2 { color: #1877f2; margin-top: 0; }
+        .box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #chatBox {
+            height: 250px; 
+            overflow-y: auto; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            margin-bottom: 10px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #145dbf; }
+        #aiStatus { margin-top: 15px; font-weight: bold; color: #333; }
+        img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+        .ai-badge {
+            background-color: #e1f0ff;
+            color: #0066cc;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>ZoneClip Super AI</header>
+
+<div class="container">
+    <div class="feed">
+        <h2>Zithunzi (Feed)</h2>
+        <div class="box">
+            <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 10px;">
+            <button onclick="uploadFoto()">Ikani Chithunzi</button>
+            <div id="gallery"></div>
+        </div>
+    </div>
+
+    <div class="chat">
+        <h2>Macheza (Chat & Grupo)</h2>
+        <div class="box" id="chatBox">
+            <p style="color: gray;"><i>Mwalandiridwa m'gulu la ZoneClip!</i></p>
+        </div>
+        <div class="input-row">
+            <input type="text" id="msgInput" placeholder="Lembani uthenga...">
+            <button onclick="sendMsg()">Tumizani</button>
+        </div>
+    </div>
+
+    <div class="ai-section">
+        <h2>ZoneClip Central Brain AI</h2>
+        <div class="box">
+            <p>Lankhulani kapena mulembe zofuna kofunsa (Medical, Football, Science, School, Image creation, nk.):</p>
+            <div class="input-row" style="margin-bottom: 10px;">
+                <input type="text" id="aiQuery" placeholder="Funsani chilichonse kapena 'panga chithunzi cha...' ">
+                <button onclick="askCentralAI()">Funsani AI</button>
+            </div>
+            <button onclick="startVoice()">🎤 Kumva Mawu</button>
+            <div id="aiResponseArea" style="margin-top: 15px;">
+                <span id="aiSelectedBadge"></span>
+                <p id="aiStatus">Mukhoza kuyamba kufunsa.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function uploadFoto() {
+        const input = document.getElementById('imageInput');
+        const gallery = document.getElementById('gallery');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                gallery.insertBefore(img, gallery.firstChild);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function sendMsg() {
+        const input = document.getElementById('msgInput');
+        const chatBox = document.getElementById('chatBox');
+        if(input.value.trim() !== "") {
+            const p = document.createElement('p');
+            p.innerHTML = `<b>Inu:</b> ${input.value}`;
+            chatBox.appendChild(p);
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    const aiBrainDatabase = {
+        "medical": "Chipatala AI: Kuti mukhale bwino, imwani madzi ambiri ndipo bonani dokotala ngati vuto likupitilira.",
+        "football": "Mpira AI: Real Madrid, Man City komanso mpira wa mu Africa uli ndi zotsatira zabwino sabata ino!",
+        "science": "Sayansi AI: Chilengedwe chili ndi ma atomu, ndipo mphamvu ya gravity ndiyo imagwira dziko lapansi.",
+        "school": "Sukulu/Maphunziro AI: Masamu ndi mbiri yakale ndizofunika. Kodi mukufuna chithandizo pa homuweki yiti?",
+        "history": "Mbiri AI: Maiko ambiri a mu Africa adapeza ufulu m'zaka za m'ma 1960.",
+        "agriculture": "Ulimi AI: Nthaka yachonde imafunika manyowa achilengedwe komanso madzi okwanira.",
+        "tech": "Tekinoloje AI: Mapulogalamu amapangidwa ndi ma khodi monga JavaScript komanso Python.",
+        "default": "ZoneClip Central AI: Ndalandira funso lanu. Ndikuwunika m'magulu anga onse 30 a nzeru."
+    };
+
+    function askCentralAI() {
+        const query = document.getElementById('aiQuery').value.toLowerCase();
+        const statusText = document.getElementById('aiStatus');
+        const badge = document.getElementById('aiSelectedBadge');
+        
+        if(query.trim() === "") return;
+
+        statusText.innerText = "Central AI ikuganiza...";
+
+        if (query.includes("panga chithunzi") || query.includes("image") || query.includes("foto")) {
+            badge.className = "ai-badge";
+            badge.innerText = "AI ya Zithunzi (Image AI Activated)";
+            const encodedPrompt = encodeURIComponent(query.replace("panga chithunzi cha", ""));
+            statusText.innerHTML = `<p>AI yapanga chithunzi ichi malinga ndi malangizo anu:</p>
+                                    <img src="https://image.pollinations.ai/p/${encodedPrompt}?width=500&height=500&nofeed=true" alt="AI Generated">`;
+            return;
+        }
+
+        let selectedBrain = "default";
+        
+        if (query.includes("chipatala") || query.includes("odwala") || query.includes("m'mimba") || query.includes("mutu")) {
+            selectedBrain = "medical";
+        } else if (query.includes("mpira") || query.includes("football") || query.includes("team")) {
+            selectedBrain = "football";
+        } else if (query.includes("sayansi") || query.includes("science") || query.includes("space")) {
+            selectedBrain = "science";
+        } else if (query.includes("sukulu") || query.includes("homuweki")) {
+            selectedBrain = "school";
+        } else if (query.includes("ulimi") || query.includes("munda")) {
+            selectedBrain = "agriculture";
+        } else if (query.includes("mbiri") || query.includes("kale")) {
+            selectedBrain = "history";
+        } else if (query.includes("code") || query.includes("computa")) {
+            selectedBrain = "tech";
+        }
+
+        setTimeout(() => {
+            badge.className = "ai-badge";
+            badge.innerText = `Ubongo Utsegulidwa: ${selectedBrain.toUpperCase()} AI`;
+            statusText.innerText = aiBrainDatabase[selectedBrain];
+            
+            const speech = new SpeechSynthesisUtterance(aiBrainDatabase[selectedBrain]);
+            speech.lang = 'pt-BR'; 
+            window.speechSynthesis.speak(speech);
+        }, 800);
+    }
+
+    function startVoice() {
+        const statusText = document.getElementById('aiStatus');
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-US"; 
+            recognition.start();
+            statusText.innerText = "🎤 Ndikumvetserani, lankhulani tsopano...";
+            
+            recognition.onresult = function(event) {
+                const text = event.results[0][0].transcript;
+                document.getElementById('aiQuery').value = text;
+                askCentralAI();
+            };
+        } else {
+            statusText.innerText = "Chipangizo chanu sichikuthandizira Web Speech API pamanja.";
+        }
+    }
+</script>
+
+</body>
+</html>
+
