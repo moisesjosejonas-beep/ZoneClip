@@ -1,0 +1,43 @@
+// Função para carregar e mostrar a foto no Feed
+function uploadFoto() {
+    const input = document.getElementById('imageInput');
+    const gallery = document.getElementById('gallery');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100%';
+            img.style.borderRadius = '8px';
+            img.style.marginTop = '10px';
+            gallery.appendChild(img);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Função para enviar mensagem no Chat
+function sendMsg() {
+    const input = document.getElementById('msgInput');
+    const chatBox = document.getElementById('chatBox');
+    
+    if(input.value.trim() !== "") {
+        const p = document.createElement('p');
+        p.innerHTML = `<b>Inu:</b> ${input.value}`;
+        chatBox.appendChild(p);
+        input.value = "";
+        // Faz o chat rolar para a última mensagem automaticamente
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+// Função simulando o microfone da AI (Ouvir)
+function startVoice() {
+    document.getElementById('aiStatus').innerText = "AI akumva mawu anu kwakanthawi...";
+}
+
+// Função simulando a voz da AI (Falar)
+function aiSpeak() {
+    document.getElementById('aiStatus').innerText = "AI akunena: 'Moni! Nditha kuona zithunzi zanu.'";
+}
