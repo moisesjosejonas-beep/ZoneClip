@@ -1,0 +1,156 @@
+index.html
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoneClip - Social Media AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #1877f2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+        .feed, .chat, .ai-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .ai-section { border-right: none; background-color: #eef5ff; }
+        h2 { color: #1877f2; margin-top: 0; }
+        .box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #chatBox {
+            height: 250px; 
+            overflow-y: auto; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            margin-bottom: 10px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #145dbf; }
+        #aiStatus { margin-top: 15px; font-weight: bold; color: #333; }
+        img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<header>ZoneClip</header>
+
+<div class="container">
+    <div class="feed">
+        <h2>Zithunzi (Feed)</h2>
+        <div class="box">
+            <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 10px;">
+            <button onclick="uploadFoto()">Ikani Chithunzi</button>
+            <div id="gallery"></div>
+        </div>
+    </div>
+
+    <div class="chat">
+        <h2>Macheza (Chat & Grupo)</h2>
+        <div class="box" id="chatBox">
+            <p style="color: gray;"><i>Mwalandiridwa m'gulu la ZoneClip!</i></p>
+        </div>
+        <div class="input-row">
+            <input type="text" id="msgInput" placeholder="Lembani uthenga...">
+            <button onclick="sendMsg()">Tumizani</button>
+        </div>
+    </div>
+
+    <div class="ai-section">
+        <h2>AI Wodziwa Kuona & Kumva</h2>
+        <div class="box">
+            <p>Dinani mabatani awa kuti muyese AI:</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button onclick="startVoice()">🎤 Kumva Mawu</button>
+                <button onclick="aiSpeak()">🔊 AI Alankhule</button>
+            </div>
+            <p id="aiStatus"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function uploadFoto() {
+        const input = document.getElementById('imageInput');
+        const gallery = document.getElementById('gallery');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                gallery.insertBefore(img, gallery.firstChild);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function sendMsg() {
+        const input = document.getElementById('msgInput');
+        const chatBox = document.getElementById('chatBox');
+        if(input.value.trim() !== "") {
+            const p = document.createElement('p');
+            p.innerHTML = `<b>Inu:</b> ${input.value}`;
+            chatBox.appendChild(p);
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    function startVoice() {
+        document.getElementById('aiStatus').innerText = "🔊 AI ikumva... (Pano titha kulumikiza ndi ma Microphone API kutsogolo).";
+    }
+
+    function aiSpeak() {
+        document.getElementById('aiStatus').innerText = "🔊 AI ikuti: 'Moni! Ndine AI ya ZoneClip. Nditha kuona zithunzi zanu komanso kumva mawu!'";
+    }
+</script>
+
+</body>
+</html>
